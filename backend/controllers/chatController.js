@@ -1,3 +1,4 @@
+// chatController.js
 const axios = require('axios');
 const Conversation = require('../models/Conversation');
 const pool = require('../dbConfig'); // 引入数据库连接池
@@ -24,12 +25,14 @@ exports.sendMessage = async (req, res) => {
   }
 
   try {
+    const timestamp = new Date().toISOString();
+
     // 记录用户消息
     await Conversation.create({
       session_id,
       sender: 'user',
       message,
-      timestamp: new Date().toISOString(),
+      timestamp,
     });
 
     // 查询 FAQ
@@ -40,14 +43,17 @@ exports.sendMessage = async (req, res) => {
         session_id,
         sender: 'bot',
         message: faqAnswer,
-        timestamp: new Date().toISOString(),
+        timestamp,
       });
 
       return res.json({ session_id, reply: faqAnswer });
     }
 
     // 调用模型服务
-    const response = await axios.post('http://localhost:8000/predict', { text: message });
+    const response = await axios.post('http://localhost:8000/predict', { 
+        session_id,
+        text: message
+    });
     const { intent, entities, reply } = response.data;
 
     // 记录机器人回复
@@ -55,7 +61,7 @@ exports.sendMessage = async (req, res) => {
       session_id,
       sender: 'bot',
       message: reply,
-      timestamp: new Date().toISOString(),
+      timestamp,
     });
 
     return res.json({ session_id, reply });
@@ -81,7 +87,7 @@ exports.getHistory = async (req, res) => {
       history: history.map((entry) => ({
         sender: entry.sender,
         message: entry.message,
-        timestamp: entry.timestamp,
+        timestamp: entry.timestamp, // 根据需要，可以格式化日期
       })),
     });
   } catch (error) {
