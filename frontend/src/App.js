@@ -1,18 +1,11 @@
 import React from 'react';
+import ChatWindow from './components/ChatWindow';
+import './App.css'; // 确保有基本样式
 
 function App() {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <header>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-
-          hello guys 
-        </a>
-      </header>
+    <div className="App">
+      <ChatWindow />
     </div>
   );
 }
