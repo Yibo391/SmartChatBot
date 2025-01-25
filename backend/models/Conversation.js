@@ -63,3 +63,29 @@ exports.insertFAQ = async (data) => {
     throw error;
   }
 };
+
+// 新增删除最早100条记录的方法
+exports.deleteFirst100Messages = async (session_id) => {
+  try {
+    // 使用子查询选择最早的100条记录
+    const [result] = await pool.execute(
+      `
+      DELETE FROM conversation_logs
+      WHERE id IN (
+        SELECT id FROM (
+          SELECT id FROM conversation_logs
+          WHERE session_id = ?
+          ORDER BY timestamp ASC
+          LIMIT 100
+        ) AS temp
+      )
+      `,
+      [session_id]
+    );
+
+    console.log(`已删除 ${result.affectedRows} 条最早的聊天记录`);
+  } catch (error) {
+    console.error('删除最早的100条聊天记录时出错:', error);
+    throw error;
+  }
+};
