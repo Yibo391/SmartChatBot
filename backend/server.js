@@ -1,31 +1,30 @@
 // server.js
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const chatRoutes = require('./routes/chat');
-const pool = require('./dbConfig'); // 引入数据库连接池
+const app = require('./app');
+const pool = require('./dbConfig');
 
-const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
-// 配置中间件
-app.use(cors());
-app.use(bodyParser.json());
+async function startServer() {
+    try {
+        // Test database connection
+        const connection = await pool.getConnection();
+        console.log('Database connected successfully');
+        connection.release();
 
-// 使用聊天路由
-app.use('/api/chat', chatRoutes);
+        // Start server
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+            console.log('\nAvailable routes:');
+            console.log('GET    /api/faq      - Get all FAQs');
+            console.log('GET    /api/faq/:id  - Get FAQ by ID');
+            console.log('GET    /api/test     - Test API');
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+}
 
-// 测试数据库连接
-pool.getConnection()
-  .then((connection) => {
-    console.log('成功连接到 MySQL 数据库');
-    connection.release();
-  })
-  .catch((err) => {
-    console.error('无法连接到 MySQL 数据库:', err);
-  });
-
-// 启动服务器
-app.listen(PORT, () => {
-  console.log(`后端服务器正在运行在端口 ${PORT}`);
-});
+startServer();

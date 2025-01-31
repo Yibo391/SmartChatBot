@@ -1,7 +1,6 @@
-// Conversation.js
 const pool = require('../dbConfig');
 
-// 格式化日期为 'YYYY-MM-DD HH:MM:SS'
+// Format date to 'YYYY-MM-DD HH:MM:SS'
 const formatDate = (date) => {
   const pad = (n) => (n < 10 ? '0' + n : n);
   return (
@@ -19,7 +18,7 @@ const formatDate = (date) => {
   );
 };
 
-// 插入聊天记录
+// Insert chat message
 exports.create = async (data) => {
   try {
     const formattedTimestamp = formatDate(new Date(data.timestamp));
@@ -34,7 +33,7 @@ exports.create = async (data) => {
   }
 };
 
-// 查询聊天记录
+// Query chat history
 exports.findAll = async (conditions) => {
   try {
     const [rows] = await pool.execute(
@@ -50,7 +49,7 @@ exports.findAll = async (conditions) => {
   }
 };
 
-// 插入 FAQ
+// Insert FAQ
 exports.insertFAQ = async (data) => {
   try {
     const [result] = await pool.execute(
@@ -64,10 +63,9 @@ exports.insertFAQ = async (data) => {
   }
 };
 
-// 新增删除最早100条记录的方法
+// Delete oldest 100 messages
 exports.deleteFirst100Messages = async (session_id) => {
   try {
-    // 使用子查询选择最早的100条记录
     const [result] = await pool.execute(
       `
       DELETE FROM conversation_logs
@@ -83,9 +81,58 @@ exports.deleteFirst100Messages = async (session_id) => {
       [session_id]
     );
 
-    console.log(`已删除 ${result.affectedRows} 条最早的聊天记录`);
+    console.log(`Deleted ${result.affectedRows} oldest chat messages`);
   } catch (error) {
-    console.error('删除最早的100条聊天记录时出错:', error);
+    console.error('Error deleting oldest 100 chat messages:', error);
+    throw error;
+  }
+};
+
+// Get all FAQ questions with tags
+exports.getAllFAQs = async () => {
+  try {
+    console.log('Attempting to fetch FAQs from database...');
+    const [rows] = await pool.execute(
+      `SELECT id, question, answer, category, tags 
+       FROM faq 
+       ORDER BY category, id`
+    );
+    console.log(`Successfully fetched ${rows.length} FAQs`);
+    console.log('First FAQ:', rows[0]); // Debug log
+    return rows;
+  } catch (error) {
+    console.error('Database error in getAllFAQs:', error);
+    throw error;
+  }
+};
+
+// Get FAQ by tag
+exports.getFAQsByTag = async (tag) => {
+  try {
+    const [rows] = await pool.execute(
+      `SELECT id, question, answer, category, tags 
+       FROM faq
+       WHERE tags LIKE ?
+       ORDER BY category, id`,
+      [`%${tag}%`]
+    );
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Get FAQ answer by question ID
+exports.getFAQAnswer = async (questionId) => {
+  try {
+    const [rows] = await pool.execute(
+      `SELECT answer 
+       FROM faq 
+       WHERE id = ?`,
+      [questionId]
+    );
+    return rows[0]?.answer || null;
+  } catch (error) {
     throw error;
   }
 };

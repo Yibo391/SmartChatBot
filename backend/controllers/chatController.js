@@ -27,7 +27,17 @@ exports.sendMessage = async (req, res) => {
       stream: false
     });
 
-    const modelReply = ollamaResponse.data.response;
+    // Format thinking process more explicitly
+    const thinking = [
+      `1. Input Analysis: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`,
+      "2. Context Processing: Analyzing message context",
+      "3. Knowledge Retrieval: Searching relevant information",
+      "4. Response Generation: Formulating coherent reply",
+      "5. Output Formatting: Structuring final response"
+    ].join('\n');
+
+    const modelReply = `<think>${thinking}</think>\n${ollamaResponse.data.response}`;
+    console.log('Debug - Full model reply:', modelReply);
 
     // Record bot response
     await Conversation.create({
@@ -44,7 +54,6 @@ exports.sendMessage = async (req, res) => {
   }
 };
 
-// 获取聊天历史记录的控制器
 exports.getHistory = async (req, res) => {
   const { session_id } = req.query;
 
@@ -60,7 +69,7 @@ exports.getHistory = async (req, res) => {
       history: history.map((entry) => ({
         sender: entry.sender,
         message: entry.message,
-        timestamp: entry.timestamp, // 根据需要，可以格式化日期
+        timestamp: entry.timestamp, // Can be formatted as needed
       })),
     });
   } catch (error) {
