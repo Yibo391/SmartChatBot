@@ -89,7 +89,7 @@ OLLAMA_MODEL=deepseek-r1:7b
 The chatbot shows its reasoning process, helping you understand how it arrived at its answers. Click the "Thinking Process" button to see the detailed steps.
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/112749262/282583009-0e7499c3-cbd0-4e70-be6a-1d2265e3496c.png" alt="Thinking Process Demo" width="800px"/>
+  <img src="https://github.com/Yibo391/SmartChatBot/blob/main/deep_think.png" alt="Thinking Process Demo" width="800px"/>
   <p><em>Thinking Process Visualization</em></p>
 </div>
  
@@ -101,7 +101,7 @@ Quick access to common questions through:
 - Seamless chat integration
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/112749262/282583009-0e7499c3-cbd0-4e70-be6a-1d2265e3496c.png" alt="Thinking Process Demo" width="800px"/>
+  <img src="https://github.com/Yibo391/SmartChatBot/blob/main/general question.png" alt="Thinking Process Demo" width="800px"/>
   <p><em>QAs Visualization</em></p>
 </div>
 ## 🤝 Troubleshooting
