@@ -4,10 +4,10 @@ A modern chat interface with AI-powered responses and smart FAQ system.
 
 <div align="center">
   <p><strong>💭 Deep Thinking Process</strong></p>
-  <img src="https://user-images.githubusercontent.com/112749262/282583009-0e7499c3-cbd0-4e70-be6a-1d2265e3496c.png" alt="Deep Thinking Demo" width="800px"/>
+  <img src="https://github.com/Yibo391/SmartChatBot/blob/main/deep_think.png" alt="Thinking Process Demo" width="800px"/>
   
   <p><strong>📚 Smart FAQ System</strong></p>
-  <img src="https://user-images.githubusercontent.com/112749262/282583019-cba97f7c-fe9d-4312-9d83-d5183517bd20.png" alt="FAQ System Demo" width="800px"/>
+  <img src="https://github.com/Yibo391/SmartChatBot/blob/main/general question.png" alt="Thinking Process Demo" width="800px"/>
 
   [Live Demo](https://github.com/Yibo391/SmartChatBot) | [Report Bug](https://github.com/Yibo391/SmartChatBot/issues) | [Request Feature](https://github.com/Yibo391/SmartChatBot/issues)
 </div>
