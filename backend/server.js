@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const chatRoutes = require('./routes/chat');
+const faqRoutes = require('./routes/faq'); // Add this line
 const pool = require('./dbConfig'); // Import database pool
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(bodyParser.json());
 
 // Use chat routes
 app.use('/api/chat', chatRoutes);
+app.use('/api/faq', faqRoutes); // Add this line
 
 // Test database connection
 pool.getConnection()
