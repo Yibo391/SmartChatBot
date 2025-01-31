@@ -9,9 +9,6 @@ const ChatWindow = () => {
   const [sessionId, setSessionId] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const [showThinking, setShowThinking] = useState({});
-  const [faqs, setFaqs] = useState([]);
-  const [selectedTag, setSelectedTag] = useState('all');
-  const [availableTags, setAvailableTags] = useState([]);
   const messagesEndRef = useRef(null);
 
   // 初始化会话ID
@@ -104,95 +101,11 @@ const ChatWindow = () => {
     ));
   };
 
-  // Fetch FAQs
-  useEffect(() => {
-    fetchFAQs();
-  }, []);
-
-  const fetchFAQs = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/api/faq');
-      console.log('FAQ Data:', response.data); // Add this line to debug
-      setFaqs(response.data);
-      
-      // Extract unique tags
-      const tags = new Set();
-      response.data.forEach(faq => {
-        if (faq.tags) {
-          console.log('FAQ tags:', faq.tags); // Add this line to debug
-          faq.tags.split(',').forEach(tag => tags.add(tag.trim()));
-        }
-      });
-      const uniqueTags = ['all', ...Array.from(tags)];
-      console.log('Unique tags:', uniqueTags); // Add this line to debug
-      setAvailableTags(uniqueTags);
-    } catch (error) {
-      console.error('Error fetching FAQs:', error);
-    }
-  };
-
-  const handleFAQClick = async (questionId, question) => {
-    try {
-      const response = await axios.get(`http://localhost:3001/api/faq/${questionId}`);
-      
-      // Add question to chat as user message
-      const userMessage = {
-        sender: 'user',
-        message: question,
-        timestamp: new Date().toISOString()
-      };
-
-      // Add answer to chat as bot message
-      const botMessage = {
-        sender: 'bot',
-        message: response.data.answer,
-        timestamp: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, userMessage, botMessage]);
-    } catch (error) {
-      console.error('Error fetching FAQ answer:', error);
-    }
-  };
-
   return (
     <div className="chat-container">
       <div className="chat-header">
         <h2>AI Assistant</h2>
         <div className="session-id">Session: {sessionId}</div>
-      </div>
-
-      <div className="faq-container">
-        <div className="faq-tags-wrapper">
-          {availableTags.map(tag => (
-            <button
-              key={tag}
-              className={`tag-button ${selectedTag === tag ? 'active' : ''}`}
-              onClick={() => setSelectedTag(tag)}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-
-        <div className="faq-section">
-          {faqs.length > 0 ? (
-            faqs
-              .filter(faq => selectedTag === 'all' || (faq.tags && faq.tags.includes(selectedTag)))
-              .map(faq => (
-                <div
-                  key={faq.id}
-                  className="faq-question"
-                  onClick={() => handleFAQClick(faq.id, faq.question)}
-                >
-                  <span className="faq-category">{faq.category}</span>
-                  <span className="faq-text">{faq.question}</span>
-                </div>
-              ))
-          ) : (
-            <div className="no-faqs">Loading FAQs...</div>
-          )}
-        </div>
       </div>
 
       <div className="chat-messages">
