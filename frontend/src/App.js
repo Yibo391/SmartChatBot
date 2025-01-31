@@ -1,6 +1,6 @@
 import React from 'react';
 import ChatWindow from './components/ChatWindow';
-import './App.css'; // 确保有基本样式
+import './App.css'; // Ensure basic styles are loaded
 
 function App() {
   return (

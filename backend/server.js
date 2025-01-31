@@ -1,30 +1,31 @@
 // server.js
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
-const app = require('./app');
-const pool = require('./dbConfig');
+const chatRoutes = require('./routes/chat');
+const pool = require('./dbConfig'); // Import database pool
 
-const PORT = process.env.PORT || 3001;
+const app = express();
+const PORT = 3001;
 
-async function startServer() {
-    try {
-        // Test database connection
-        const connection = await pool.getConnection();
-        console.log('Database connected successfully');
-        connection.release();
+// Configure middleware
+app.use(cors());
+app.use(bodyParser.json());
 
-        // Start server
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-            console.log('\nAvailable routes:');
-            console.log('GET    /api/faq      - Get all FAQs');
-            console.log('GET    /api/faq/:id  - Get FAQ by ID');
-            console.log('GET    /api/test     - Test API');
-        });
-    } catch (error) {
-        console.error('Failed to start server:', error);
-        process.exit(1);
-    }
-}
+// Use chat routes
+app.use('/api/chat', chatRoutes);
 
-startServer();
+// Test database connection
+pool.getConnection()
+  .then((connection) => {
+    console.log('Successfully connected to MySQL database');
+    connection.release();
+  })
+  .catch((err) => {
+    console.error('Unable to connect to MySQL database:', err);
+  });
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Backend server is running on port ${PORT}`);
+});
